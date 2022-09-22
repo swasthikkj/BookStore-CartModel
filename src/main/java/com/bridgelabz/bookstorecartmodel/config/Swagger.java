@@ -67,7 +67,7 @@ public class Swagger implements WebMvcConfigurer {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo("bookstorecartmodel",
+        return new ApiInfo("BookStore CartModel",
                 "APIs for E.",
                 "1.0",
                 "Terms of service",

@@ -1,5 +1,7 @@
 package com.bridgelabz.bookstorecartmodel.dto;
 
+import javax.validation.constraints.Pattern;
+
 import lombok.Data;
 
 /**
@@ -10,5 +12,6 @@ import lombok.Data;
 
 @Data
 public class CartDTO {
+	@Pattern(regexp = "^[1-1000]$", message = "Quantity is Invalid")
 	private long quantity;
 }

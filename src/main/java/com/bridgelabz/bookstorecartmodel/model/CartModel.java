@@ -28,7 +28,7 @@ public class CartModel {
 	private long userId;
 	private long bookId;
 	private long quantity;
-	private long totalPrice;
+	private double totalPrice;
 	
 	public CartModel(CartDTO cartDTO) {
 		this.quantity = cartDTO.getQuantity();
