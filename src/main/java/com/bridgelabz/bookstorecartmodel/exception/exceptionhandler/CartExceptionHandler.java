@@ -6,12 +6,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.bridgelabz.bookstorecartmodel.exception.CartNotFoundException;
-import com.bridgelabz.bookstorecartmodel.util.Response;
+import com.bridgelabz.bookstorecartmodel.util.CartResponse;
 @ControllerAdvice
 public class CartExceptionHandler {
 	@ExceptionHandler(CartNotFoundException.class)
-	public ResponseEntity<Response> handleId(CartNotFoundException ab) {
-		Response response = new Response();
+	public ResponseEntity<CartResponse> handleId(CartNotFoundException ab) {
+		CartResponse response = new CartResponse();
 		response.setErrorcode(400);
 		response.setMessage(ab.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

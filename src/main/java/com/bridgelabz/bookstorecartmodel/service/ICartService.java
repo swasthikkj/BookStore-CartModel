@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bridgelabz.bookstorecartmodel.dto.CartDTO;
 import com.bridgelabz.bookstorecartmodel.model.CartModel;
+import com.bridgelabz.bookstorecartmodel.util.CartResponse;
 /**
  * Purpose:Interface for cart
  * @version 4.15.1.RELEASE
@@ -20,5 +21,7 @@ public interface ICartService {
 	List<CartModel> getAllCartItemsForUser(String token);
 
 	List<CartModel> getAllCartItems(String token);
+
+	CartResponse validateCart(Long cartId);
 	
 }

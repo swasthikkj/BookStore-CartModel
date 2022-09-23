@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.bookstorecartmodel.dto.CartDTO;
 import com.bridgelabz.bookstorecartmodel.model.CartModel;
 import com.bridgelabz.bookstorecartmodel.service.ICartService;
-import com.bridgelabz.bookstorecartmodel.util.Response;
+import com.bridgelabz.bookstorecartmodel.util.CartResponse;
 
 /**
  * Purpose:Controller for cart
@@ -40,9 +40,9 @@ public class CartController {
 	 */
 
 	@PostMapping("/addToCart")
-	public ResponseEntity<Response> addToCart(@Valid @RequestBody CartDTO cartDTO, @RequestParam Long bookId, @RequestHeader String token) {
+	public ResponseEntity<CartResponse> addToCart(@RequestBody CartDTO cartDTO, @RequestParam Long bookId, @RequestHeader String token) {
 		CartModel cartModel = cartService.addToCart(cartDTO, bookId, token);
-		Response response = new Response(200, "Book added to cart", cartModel);
+		CartResponse response = new CartResponse(200, "Book added to cart", cartModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
 	
@@ -51,9 +51,9 @@ public class CartController {
 	 */
 	
 	@DeleteMapping("/removingFromCart/{cartId}")
-	public ResponseEntity<Response> removingFromCart(@RequestParam Long cartId, @RequestHeader String token) {
+	public ResponseEntity<CartResponse> removingFromCart(@RequestParam Long cartId, @RequestHeader String token) {
 		CartModel cartModel = cartService.removingFromCart(cartId, token);
-		Response response = new Response(200, "Book removed from cart", cartModel);
+		CartResponse response = new CartResponse(200, "Book removed from cart", cartModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
 	
@@ -62,9 +62,9 @@ public class CartController {
 	 */
 	
 	@PutMapping("/updateQuantity/{cartId}")
-	public ResponseEntity<Response> updateQuantity(@Valid @RequestParam Long cartId, @PathVariable Long quantity, @RequestHeader String token) {
+	public ResponseEntity<CartResponse> updateQuantity(@RequestParam Long cartId, @PathVariable Long quantity, @RequestHeader String token) {
 		CartModel cartModel = cartService.updateQuantity(cartId, quantity, token);
-		Response response = new Response(200, "Book quantity updated in cart", cartModel);
+		CartResponse response = new CartResponse(200, "Book quantity updated in cart", cartModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
 	
@@ -73,9 +73,9 @@ public class CartController {
 	 */
 	
 	@GetMapping("/getAllCartItemsForUser")
-	public ResponseEntity<Response> getAllCartItemsForUser(@RequestHeader String token) {
+	public ResponseEntity<CartResponse> getAllCartItemsForUser(@RequestHeader String token) {
 		List<CartModel> cartModel = cartService.getAllCartItemsForUser(token);
-		Response response = new Response(200, "fetched all items in cart for user", cartModel);
+		CartResponse response = new CartResponse(200, "fetched all items in cart for user", cartModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
 	}
 	
@@ -84,9 +84,14 @@ public class CartController {
 	 */
 	
 	@GetMapping("/getAllCartItems")
-	public ResponseEntity<Response> getAllCartItems(@RequestHeader String token) {
+	public ResponseEntity<CartResponse> getAllCartItems(@RequestHeader String token) {
 		List<CartModel> cartModel = cartService.getAllCartItems(token);
-		Response response = new Response(200, "fetched all items in cart", cartModel);
+		CartResponse response = new CartResponse(200, "fetched all items in cart", cartModel);
 		return new ResponseEntity<>(response, HttpStatus.OK);	
+	}
+	
+	@GetMapping("/getCart/{cartId}")
+	public CartResponse validateCart(@PathVariable Long cartId) {
+		return cartService.validateCart(cartId);
 	}
 }

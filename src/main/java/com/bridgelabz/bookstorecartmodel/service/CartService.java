@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.bridgelabz.bookstorecartmodel.util.BookResponse;
+import com.bridgelabz.bookstorecartmodel.util.CartResponse;
 import com.bridgelabz.bookstorecartmodel.util.TokenUtil;
 import com.bridgelabz.bookstorecartmodel.util.UserResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import com.bridgelabz.bookstorecartmodel.dto.BookDTO;
 import com.bridgelabz.bookstorecartmodel.dto.CartDTO;
 import com.bridgelabz.bookstorecartmodel.exception.CartNotFoundException;
 import com.bridgelabz.bookstorecartmodel.model.CartModel;
@@ -44,7 +44,7 @@ public class CartService implements ICartService {
 	@Override
 	public CartModel addToCart(CartDTO cartDTO, Long bookId, String token) {
 		Long userId = tokenUtil.decodeToken(token);
-		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verifyToken/" + userId, UserResponse.class);
+		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verify/" + userId, UserResponse.class);		
 		if (isUserPresent.getErrorcode() == 200) {
 			log.info("a");
 			BookResponse isBookPresent = restTemplate.getForObject("http://BS-BookModel:8091/bookService/validateBook/" + bookId, BookResponse.class);
@@ -74,7 +74,7 @@ public class CartService implements ICartService {
 	@Override
 	public CartModel removingFromCart(Long cartId, String token) {
 		Long userId = tokenUtil.decodeToken(token);
-		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verifyToken/" + userId, UserResponse.class);
+		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verify/" + userId, UserResponse.class);
 		if (isUserPresent.getErrorcode() == 200) {
 			Optional<CartModel> isCartPresent = cartRepository.findById(cartId);
 			if (isCartPresent.isPresent()) {
@@ -96,7 +96,7 @@ public class CartService implements ICartService {
 	@Override
 	public CartModel updateQuantity(Long cartId, Long quantity, String token) {
 		Long userId = tokenUtil.decodeToken(token);
-		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verifyToken/" + userId, UserResponse.class);
+		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verify/" + token, UserResponse.class);
 		if (isUserPresent.getErrorcode() == 200) {
 			Optional<CartModel> isCartPresent = cartRepository.findById(cartId);
 			if (isCartPresent.isPresent()) {
@@ -131,7 +131,7 @@ public class CartService implements ICartService {
 	@Override
 	public List<CartModel> getAllCartItemsForUser(String token) {
 		Long userId = tokenUtil.decodeToken(token);
-		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verifyToken/" + userId, UserResponse.class);
+		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verify/" + userId, UserResponse.class);
 		if (isUserPresent.getErrorcode() == 200) {
 			List<CartModel> isCartPresent = cartRepository.findByUserId(userId);
 			if (isCartPresent.size()>0) {
@@ -149,7 +149,7 @@ public class CartService implements ICartService {
 	@Override
 	public List<CartModel> getAllCartItems(String token) {
 		Long userId = tokenUtil.decodeToken(token);
-		UserResponse isUserPresent = restTemplate.getForObject("http://BOOKSTORE-USER-SERVICE:8049/bookstoreuser/validateuser/" + userId, UserResponse.class);
+		UserResponse isUserPresent = restTemplate.getForObject("http://BS-UserService:8090/userService/verify/" + userId, UserResponse.class);
 		if (isUserPresent.getErrorcode() == 200) {
 			List<CartModel> isCartPresent = cartRepository.findAll();
 			if (isCartPresent.size()>0) {
@@ -158,5 +158,18 @@ public class CartService implements ICartService {
 			throw new CartNotFoundException(500, "No items found in cart");
 		}
 		throw new CartNotFoundException(500, "Invalid token");
+	}
+	
+	/**
+	 *  Purpose:Validating cart
+	 */
+	
+	@Override
+	public CartResponse validateCart(Long cartId) {
+		Optional<CartModel> isCartPresent = cartRepository.findById(cartId);
+		if (isCartPresent.isPresent()) {
+			return new CartResponse(200, "Cart Validate Successfully", isCartPresent.get());
+		}
+		throw new CartNotFoundException(400, "Cart Not Found");
 	}
 }

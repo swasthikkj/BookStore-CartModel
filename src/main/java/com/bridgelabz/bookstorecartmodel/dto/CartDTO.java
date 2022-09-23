@@ -12,6 +12,6 @@ import lombok.Data;
 
 @Data
 public class CartDTO {
-	@Pattern(regexp = "^[1-1000]$", message = "Quantity is Invalid")
+	@Pattern(regexp = "^[1-1000]{1,4}$", message = "Quantity is Invalid")
 	private long quantity;
 }
